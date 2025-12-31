@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Planetary Day Correspondences</title>
+
+<style>
+  body {
+    background-color: #0b0d0c;
+    color: #e6e2d6;
+    font-family: Georgia, serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+  }
+
+  .container {
+    width: 420px;
+    padding: 20px 24px;
+    opacity: 0;
+    animation: fadeIn 1.4s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .title {
+    font-size: 1.05em;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .sub {
+    font-size: 0.92em;
+    opacity: 0.85;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    white-space: pre-line;
+  }
+
+  .section {
+    font-size: 0.82em;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.6;
+    margin-top: 10px;
+    margin-bottom: 6px;
+  }
+
+  .list {
+    font-size: 0.9em;
+    opacity: 0.78;
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+
+  .charm {
+    margin-top: 12px;
+    font-size: 0.9em;
+    opacity: 0.86;
+    line-height: 1.65;
+    white-space: pre-line;
+  }
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="title" id="dayTitle"></div>
+    <div class="sub" id="dayThemes"></div>
+
+    <div class="section">Best Workings</div>
+    <div class="list" id="workings"></div>
+
+    <div class="section">Correspondences</div>
+    <div class="list" id="corr"></div>
+
+    <div class="charm" id="charm"></div>
+  </div>
+
+  <script>
+    const TZ = "Australia/Brisbane";
+
+    // Notion-friendly, hedge-friendly correspondences
+    const DAYS = {
+      Sunday: {
+        planet: "Sun",
+        themes: "Vitality, confidence, success, clarity, leadership.",
+        workings: "Confidence work, blessings, road opening, gratitude, visibility, creative spark.",
+        corr: "Colors: gold, yellow\nHerbs: calendula, bay, cinnamon\nCrystals: citrine, sunstone\nIncense: frankincense\nTarot: The Sun",
+        charm: "Light of the Sun, steady and true,\nBless what I touch, guide what I do."
+      },
+      Monday: {
+        planet: "Moon",
+        themes: "Intuition, dreams, healing, home, emotion, tides.",
+        workings: "Divination, dreamwork, cleansing, self care, protection, ancestor listening, home blessing.",
+        corr: "Colors: silver, white, pearl\nHerbs: jasmine, chamomile, mugwort\nCrystals: moonstone, selenite\nIncense: myrrh\nTarot: The High Priestess",
+        charm: "Moon of quiet water and deep knowing,\nHelp me feel what is true, and soften what is heavy."
+      },
+      Tuesday: {
+        planet: "Mars",
+        themes: "Courage, action, strength, boundaries, will, momentum.",
+        workings: "Cutting cords, protection, banishing, boundary setting, decisive action, stamina.",
+        corr: "Colors: red, iron, deep rust\nHerbs: ginger, cayenne, nettle\nCrystals: carnelian, hematite\nIncense: dragon’s blood\nTarot: The Chariot",
+        charm: "Fire of Mars, sharpen my will,\nGuard my edges, steady my skill."
+      },
+      Wednesday: {
+        planet: "Mercury",
+        themes: "Communication, learning, travel, messages, trade, cleverness.",
+        workings: "Spell writing, journaling, speaking truth, study, networking, divination for clarity, petitions.",
+        corr: "Colors: yellow, light green\nHerbs: rosemary, peppermint, lavender\nCrystals: fluorite, clear quartz\nIncense: sandalwood\nTarot: The Magician",
+        charm: "Mercury, quick mind and clear tongue,\nLet my words land gently, and my choices be wise."
+      },
+      Thursday: {
+        planet: "Jupiter",
+        themes: "Expansion, luck, prosperity, blessings, growth, wisdom.",
+        workings: "Abundance work, opportunity drawing, gratitude rituals, long term visioning, faith and trust work.",
+        corr: "Colors: royal blue, purple\nHerbs: sage, clove, basil\nCrystals: lapis lazuli, amethyst\nIncense: cedar\nTarot: Wheel of Fortune",
+        charm: "Jupiter, wide sky and generous hand,\nOpen the path that serves my highest good."
+      },
+      Friday: {
+        planet: "Venus",
+        themes: "Love, beauty, harmony, pleasure, friendship, creativity, worth.",
+        workings: "Self love, attraction, reconciliation, charm work, art making, home sweetening.",
+        corr: "Colors: green, pink, copper\nHerbs: rose, vanilla, damiana\nCrystals: rose quartz, emerald\nIncense: rose\nTarot: The Empress",
+        charm: "Venus, soft power and sweet grace,\nHelp me receive, and make beauty of this day."
+      },
+      Saturday: {
+        planet: "Saturn",
+        themes: "Boundaries, structure, discipline, protection, endings, endurance.",
+        workings: "Banishing, wards, shadow work, ancestor vows, decluttering, long term planning, cord cutting, closure.",
+        corr: "Colors: black, grey, deep indigo\nHerbs: cypress, patchouli, thyme\nCrystals: smoky quartz, obsidian\nIncense: patchouli\nTarot: The World",
+        charm: "Saturn, keeper of bones and time,\nHelp me build what lasts, and release what is done."
+      }
+    };
+
+    function getWeekdayInTZ(date, timeZone) {
+      return new Intl.DateTimeFormat("en-US", { timeZone, weekday: "long" }).format(date);
+    }
+
+    (function render() {
+      const now = new Date();
+      const weekday = getWeekdayInTZ(now, TZ);
+
+      const data = DAYS[weekday] || DAYS.Monday;
+
+      document.getElementById("dayTitle").innerText =
+        weekday + " · " + data.planet + " Day";
+
+      document.getElementById("dayThemes").innerText =
+        data.themes;
+
+      document.getElementById("workings").innerText =
+        data.workings;
+
+      document.getElementById("corr").innerText =
+        data.corr;
+
+      document.getElementById("charm").innerText =
+        data.charm;
+    })();
+  </script>
+</body>
+</html>
